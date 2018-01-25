@@ -13,12 +13,17 @@ public class SampleController {
     @Inject private SampleService feignClientService;
 
     @RequestMapping(value = "/healthCheck1", method = RequestMethod.GET, produces = "application/json")
-    public boolean isAlive1() {
+    public boolean isAliveWithFallBack() {
         return feignClientService.healthCheck1();
     }
 
     @RequestMapping(value = "/healthCheck2", method = RequestMethod.GET, produces = "application/json")
-    public boolean isAlive2() {
+    public boolean isAlive() {
         return feignClientService.healthCheck2();
+    }
+
+    @RequestMapping(value = "/healthCheck3", method = RequestMethod.GET, produces = "application/json")
+    public boolean isAliveHystrixWithEnvProperty() {
+        return feignClientService.healthCheck3();
     }
 }

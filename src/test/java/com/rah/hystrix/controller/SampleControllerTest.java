@@ -27,8 +27,8 @@ public class SampleControllerTest extends BasicHystrixUtil {
     }
 
     @Test
-    public void testSystemHealth1() throws Exception {
-        boolean isGoogleSearchAlive = sampleController.isAlive1();
+    public void testSystemHealthWithFallbackMethodCall() throws Exception {
+        boolean isGoogleSearchAlive = sampleController.isAliveWithFallBack();
         HystrixInvokableInfo<?> command = HystrixRequestLog.getCurrentRequest().getAllExecutedCommands().iterator().next();
         assertEquals("HealthCheckCommand1", command.getCommandKey().name());
         assertEquals("HealthCheckGroup1", command.getCommandGroup().name());
@@ -40,8 +40,8 @@ public class SampleControllerTest extends BasicHystrixUtil {
     }
 
     @Test
-    public void testSystemHealth2() throws Exception {
-        boolean isGoogleSearchAlive = sampleController.isAlive2();
+    public void testSystemHealth() throws Exception {
+        boolean isGoogleSearchAlive = sampleController.isAlive();
         HystrixInvokableInfo<?> command = HystrixRequestLog.getCurrentRequest().getAllExecutedCommands().iterator().next();
         assertEquals("HealthCheckCommand2", command.getCommandKey().name());
         assertEquals("HealthCheckGroup2", command.getCommandGroup().name());
@@ -52,34 +52,14 @@ public class SampleControllerTest extends BasicHystrixUtil {
         assertTrue(isGoogleSearchAlive);
     }
 
-
-    /*@Test
-    public void testSystemHealth() throws Exception {
-        boolean isGoogleSearchAlive = sampleController.isAlive1();
+    @Test
+    public void testSystemHealthHystrixWithEnvPreoperty() throws Exception {
+        boolean isGoogleSearchAlive = sampleController.isAliveHystrixWithEnvProperty();
         HystrixInvokableInfo<?> command = HystrixRequestLog.getCurrentRequest().getAllExecutedCommands().iterator().next();
         assertEquals("HealthCheckCommand", command.getCommandKey().name());
-        assertEquals("HealthCheckGroup", command.getCommandGroup().name());
-        assertEquals("HealthCheckPool", command.getThreadPoolKey().name());
-        assertTrue(command.getExecutionEvents().contains(HystrixEventType.FALLBACK_SUCCESS));
-        // assert properties
-        assertEquals(110, command.getProperties().executionTimeoutInMilliseconds().get().intValue());
+        assertTrue(command.getExecutionEvents().contains(HystrixEventType.SUCCESS));
+        assertEquals(5000, command.getProperties().executionTimeoutInMilliseconds().get().intValue());
         assertEquals(true, command.getProperties().executionIsolationThreadInterruptOnTimeout().get());
-
-        *//*Field field = command.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("threadPool");
-        field.setAccessible(true);
-        HystrixThreadPool threadPool = (HystrixThreadPool) field.get(command);
-
-        Field field2 = HystrixThreadPool.HystrixThreadPoolDefault.class.getDeclaredField("properties");
-        field2.setAccessible(true);
-        HystrixThreadPoolProperties properties = (HystrixThreadPoolProperties) field2.get(threadPool);
-
-        assertEquals(30, (int) properties.coreSize().get());
-        assertEquals(101, (int) properties.maxQueueSize().get());
-        assertEquals(2, (int) properties.keepAliveTimeMinutes().get());
-        assertEquals(15, (int) properties.queueSizeRejectionThreshold().get());
-        assertEquals(1440, (int) properties.metricsRollingStatisticalWindowInMilliseconds().get());
-        assertEquals(12, (int) properties.metricsRollingStatisticalWindowBuckets().get());*//*
-
-        assertFalse(isGoogleSearchAlive);
-    }*/
+        assertTrue(isGoogleSearchAlive);
+    }
 }

@@ -4,7 +4,6 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.rah.hystrix.repository.IApplicationRepository;
 import feign.Response;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -25,6 +24,12 @@ public class SampleService {
     @HystrixCommand(fallbackMethod = "getHealthCheckFallback", groupKey = "HealthCheckGroup2", commandKey = "HealthCheckCommand2", threadPoolKey = "HealthCheckPool2", commandProperties = {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")})
     public Boolean healthCheck2() {
+        System.out.println("Entering in health check service.");
+        return getStatus();
+    }
+
+    @HystrixCommand(fallbackMethod = "getHealthCheckFallback", commandKey = "HealthCheckCommand")
+    public Boolean healthCheck3() {
         System.out.println("Entering in health check service.");
         return getStatus();
     }
